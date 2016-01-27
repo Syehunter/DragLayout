@@ -1,5 +1,7 @@
 package z.sye.space.library.adapters;
 
+import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,18 +21,27 @@ public class DragAdapter extends BaseDragAdapter<String, DragViewHolder> {
 
     @Override
     public DragViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_drag, parent, false);
+        int resource = 0;
+        if (Build.VERSION.SDK_INT >= 21) {
+            resource = R.layout.item_drag_up21;
+        } else {
+            resource = R.layout.item_drag;
+        }
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(resource, parent, false);
+
         return new DragViewHolder(itemView);
     }
 
     @Override
     protected void onViewHolderBind(final DragViewHolder holder, int position) {
-        holder.mTextView.setText(mItemList.get(position));
+        holder.mTextView.setText(mDatas.get(position));
         holder.mDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d(this.toString(), "[CurrentRemovedPosition:] " + holder.getAdapterPosition());
                 onItemRemoved(holder.getAdapterPosition());
             }
         });
     }
+
 }

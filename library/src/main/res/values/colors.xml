@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="border_red">#FF0000</color>
+    <color name="border_black">#4D4D4D</color>
 </resources>

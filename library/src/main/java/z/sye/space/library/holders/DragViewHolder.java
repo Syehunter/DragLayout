@@ -2,8 +2,11 @@ package z.sye.space.library.holders;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,13 +21,16 @@ public class DragViewHolder extends BaseDragViewHolder {
     public TextView mTextView;
     public CardView mCardView;
     public ImageView mDelete;
+    public FrameLayout mFrameLayout;
 
     public DragViewHolder(View itemView) {
         super(itemView);
         mContext = itemView.getContext();
         mCardView = (CardView) itemView.findViewById(R.id.cardView_item);
+        mFrameLayout = (FrameLayout) itemView.findViewById(R.id.fl_item);
         mTextView = (TextView) itemView.findViewById(R.id.tv_item);
         mDelete = (ImageView) itemView.findViewById(R.id.iv_item);
+        mDelete.setVisibility(View.GONE);
     }
 
     @Override
@@ -38,14 +44,23 @@ public class DragViewHolder extends BaseDragViewHolder {
     }
 
     @Override
-    public void onLongPressState() {
+    public void onLongPressMode() {
         mDelete.setVisibility(View.VISIBLE);
-        mCardView.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.border_cardview));
+        Drawable longPressDrawable = mContext.getResources().getDrawable(R.drawable.border_longpress);
+        if (Build.VERSION.SDK_INT >= 21) {
+            mCardView.setBackgroundDrawable(longPressDrawable);
+        } else {
+            mFrameLayout.setBackgroundDrawable(longPressDrawable);
+        }
     }
 
     @Override
-    public void onNormalState() {
+    public void onNormalMode() {
         mDelete.setVisibility(View.GONE);
-        mCardView.setBackgroundColor(Color.WHITE);
+        if (Build.VERSION.SDK_INT >= 21) {
+            mCardView.setBackgroundColor(Color.WHITE);
+        } else {
+            mFrameLayout.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.border_normal));
+        }
     }
 }

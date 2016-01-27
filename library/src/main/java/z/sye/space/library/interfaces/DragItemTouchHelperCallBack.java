@@ -3,6 +3,7 @@ package z.sye.space.library.interfaces;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
+import z.sye.space.library.adapters.BaseDragAdapter;
 import z.sye.space.library.holders.BaseDragViewHolder;
 
 /**
@@ -11,13 +12,18 @@ import z.sye.space.library.holders.BaseDragViewHolder;
 public class DragItemTouchHelperCallBack extends ItemTouchHelper.Callback {
 
     private DragItemChangeListener mDragItemChangeListener;
+    private int mKeepItemCount = 1;
 
-    public DragItemTouchHelperCallBack(DragItemChangeListener dragItemChangeListener) {
+    public DragItemTouchHelperCallBack(DragItemChangeListener dragItemChangeListener, int keepItemCount) {
         mDragItemChangeListener = dragItemChangeListener;
+        mKeepItemCount = keepItemCount;
     }
 
     @Override
     public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+        if (viewHolder.getItemViewType() == BaseDragAdapter.KEEP) {
+            return makeMovementFlags(0, 0);
+        }
         int dragFlags = ItemTouchHelper.UP
                 | ItemTouchHelper.DOWN
                 | ItemTouchHelper.LEFT
@@ -32,7 +38,6 @@ public class DragItemTouchHelperCallBack extends ItemTouchHelper.Callback {
             //can't move
             return false;
         }
-
         mDragItemChangeListener.onItemMove(source.getAdapterPosition(), target.getAdapterPosition());
         return true;
     }

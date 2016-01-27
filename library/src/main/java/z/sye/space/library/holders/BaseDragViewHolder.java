@@ -22,7 +22,7 @@ public abstract class BaseDragViewHolder extends RecyclerView.ViewHolder {
      */
     public abstract void onDragFinished();
 
-    public abstract void onLongPressState();
+    public abstract void onLongPressMode();
 
-    public abstract void onNormalState() ;
+    public abstract void onNormalMode();
 }
