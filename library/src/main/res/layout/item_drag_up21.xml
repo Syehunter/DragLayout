@@ -21,7 +21,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:text="新闻"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"/>
 

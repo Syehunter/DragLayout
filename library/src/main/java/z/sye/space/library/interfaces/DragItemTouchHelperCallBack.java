@@ -11,11 +11,11 @@ import z.sye.space.library.holders.BaseDragViewHolder;
  */
 public class DragItemTouchHelperCallBack extends ItemTouchHelper.Callback {
 
-    private DragItemChangeListener mDragItemChangeListener;
+    private OnItemChangeListener mOnItemChangeListener;
     private int mKeepItemCount = 1;
 
-    public DragItemTouchHelperCallBack(DragItemChangeListener dragItemChangeListener, int keepItemCount) {
-        mDragItemChangeListener = dragItemChangeListener;
+    public DragItemTouchHelperCallBack(OnItemChangeListener onItemChangeListener, int keepItemCount) {
+        mOnItemChangeListener = onItemChangeListener;
         mKeepItemCount = keepItemCount;
     }
 
@@ -38,13 +38,13 @@ public class DragItemTouchHelperCallBack extends ItemTouchHelper.Callback {
             //can't move
             return false;
         }
-        mDragItemChangeListener.onItemMove(source.getAdapterPosition(), target.getAdapterPosition());
+        mOnItemChangeListener.onItemMove(source.getAdapterPosition(), target.getAdapterPosition());
         return true;
     }
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-        mDragItemChangeListener.onItemRemoved(viewHolder.getAdapterPosition());
+        mOnItemChangeListener.onItemRemoved(viewHolder.getAdapterPosition());
     }
 
     @Override

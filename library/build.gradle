@@ -16,6 +16,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'META-INF/maven/com.belerweb/pinyin4j/pom.properties'
+        exclude 'META-INF/maven/com.belerweb/pinyin4j/pom.xml'
+    }
 }
 
 dependencies {
@@ -24,4 +28,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:recyclerview-v7:23.1.1'
     compile 'com.android.support:cardview-v7:23.1.1'
+    compile 'com.github.Syehunter:PinyinUtils:1.0.0'
 }

@@ -34,11 +34,12 @@ public class DragAdapter extends BaseDragAdapter<String, DragViewHolder> {
 
     @Override
     protected void onViewHolderBind(final DragViewHolder holder, int position) {
-        holder.mTextView.setText(mDatas.get(position));
+        holder.mTextView.setText(mDatas.get(holder.getAdapterPosition()));
         holder.mDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(this.toString(), "[CurrentRemovedPosition:] " + holder.getAdapterPosition());
+                Log.d(this.toString(), "[CurrentRemovedItem:] " + mDatas.get(holder.getAdapterPosition()));
                 onItemRemoved(holder.getAdapterPosition());
             }
         });

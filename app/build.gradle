@@ -17,6 +17,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'META-INF/maven/com.belerweb/pinyin4j/pom.properties'
+        exclude 'META-INF/maven/com.belerweb/pinyin4j/pom.xml'
+    }
 }
 
 dependencies {

@@ -1,19 +1,14 @@
 package z.sye.space.library.adapters;
 
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import z.sye.space.library.holders.BaseDragViewHolder;
 import z.sye.space.library.interfaces.DragItemStartListener;
-import z.sye.space.library.interfaces.DragItemChangeListener;
 import z.sye.space.library.interfaces.OnItemClickListener;
+import z.sye.space.library.interfaces.OnItemRemovedListener;
 import z.sye.space.library.interfaces.OnLongPressListener;
 
 /**
@@ -21,8 +16,7 @@ import z.sye.space.library.interfaces.OnLongPressListener;
  * <p/>
  * Created by Syehunter on 16/1/26.
  */
-public abstract class BaseDragAdapter<T, VH extends BaseDragViewHolder> extends RecyclerView.Adapter<VH>
-        implements DragItemChangeListener {
+public abstract class BaseDragAdapter<T, VH extends BaseDragViewHolder> extends BaseRecyclerAdapter<T, VH> {
 
     public static final int KEEP = Integer.MIN_VALUE;
 
@@ -36,8 +30,6 @@ public abstract class BaseDragAdapter<T, VH extends BaseDragViewHolder> extends 
      */
     private int mKeepItemCount = 1;
 
-    protected List<T> mDatas = new ArrayList<>();
-
     private DragItemStartListener mDragItemStartListener;
 
     private OnItemClickListener mOnItemClickListener;
@@ -45,6 +37,8 @@ public abstract class BaseDragAdapter<T, VH extends BaseDragViewHolder> extends 
      * Listener for users to do with sth. outside recyclerview when enter LongPress Mode
      */
     private OnLongPressListener mOnLongPressListener;
+
+    private OnItemRemovedListener<T> mOnItemRemovedListener;
 
     public BaseDragAdapter(DragItemStartListener listener) {
         mDragItemStartListener = listener;
@@ -59,7 +53,9 @@ public abstract class BaseDragAdapter<T, VH extends BaseDragViewHolder> extends 
     }
 
     @Override
-    public void onBindViewHolder(final VH holder, int position) {
+    public void onBindViewHolder(VH holder, int position) {
+        onViewHolderBind(holder, holder.getAdapterPosition());
+
         if (holder.getItemViewType() != KEEP) {
             //change Background for different state
             if (isLongPressMode) {
@@ -71,56 +67,47 @@ public abstract class BaseDragAdapter<T, VH extends BaseDragViewHolder> extends 
 
         holder.itemView.setOnTouchListener(
                 new OnItemTouchListener(holder, mDragItemStartListener));
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mOnItemClickListener) {
-                    Log.d(this.toString(), "[CurrentPosition]: " + holder.getAdapterPosition());
-                    if (!isLongPressMode) {
-                        mOnItemClickListener.onItemClick(holder, holder.getAdapterPosition());
-                    }
-                }
-            }
-        });
-
-        onViewHolderBind(holder, position);
     }
 
     protected abstract void onViewHolderBind(VH holder, int position);
 
     @Override
-    public int getItemCount() {
-        return mDatas.size();
-    }
-
-    @Override
     public void onItemRemoved(int position) {
+        if (null != mOnItemRemovedListener) {
+            mOnItemRemovedListener.onItemRemoved(position, mDatas.get(position));
+        }
         mDatas.remove(position);
         notifyItemRemoved(position);
-        Log.d(this.toString(), "[mDatas's Size]: " + mDatas.size());
+        notifyItemRangeChanged(position, mDatas.size());
     }
 
     @Override
     public boolean onItemMove(int fromPosition, int toPosition) {
-        Collections.swap(mDatas, fromPosition, toPosition);
+        moveDataInList(fromPosition, toPosition);
         notifyItemMoved(fromPosition, toPosition);
         return true;
     }
 
-    public void setDatas(List<T> datas) {
-        mDatas.clear();
-        mDatas.addAll(datas);
-        notifyDataSetChanged();
+    private void moveDataInList(int fromPosition, int toPosition) {
+        if (fromPosition == toPosition) {
+            return;
+        }
+        T item = mDatas.get(fromPosition);
+        mDatas.remove(item);
+        mDatas.add(toPosition, item);
+    }
+
+    @Override
+    public void onItemInsert(int position, T data) {
+        //auto put the new item at the end
+        mDatas.add(data);
+        notifyItemInserted(mDatas.size() - 1);
+        notifyItemRangeChanged(mDatas.size() - 1, mDatas.size());
     }
 
     public void setKeepItemCount(int keepItemCount) {
         mKeepItemCount = keepItemCount;
         notifyDataSetChanged();
-    }
-
-    public List<T> getDatas() {
-        return mDatas;
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -131,6 +118,10 @@ public abstract class BaseDragAdapter<T, VH extends BaseDragViewHolder> extends 
         mOnLongPressListener = onLongPressListener;
     }
 
+    public void setOnItemRemovedListener(OnItemRemovedListener<T> onItemRemovedListener) {
+        mOnItemRemovedListener = onItemRemovedListener;
+    }
+
     /**
      * Change LongPressMode to Normal
      */
@@ -139,6 +130,13 @@ public abstract class BaseDragAdapter<T, VH extends BaseDragViewHolder> extends 
             isLongPressMode = false;
             notifyDataSetChanged();
         }
+    }
+
+    /**
+     * @return if current mode is LongPressMode or not
+     */
+    public boolean getLongPressMode() {
+        return isLongPressMode;
     }
 
     private class OnItemTouchListener implements View.OnTouchListener {
@@ -180,26 +178,20 @@ public abstract class BaseDragAdapter<T, VH extends BaseDragViewHolder> extends 
                         mDownX = event.getX();
                         mDownY = event.getY();
                         isMoved = false;
-                        v.postDelayed(mLongPressRunnable, 800);
-                        Log.d(this.toString(), "Runnable Post!");
+                        v.postDelayed(mLongPressRunnable, ViewConfiguration.getLongPressTimeout());
                     }
                     break;
                 case MotionEvent.ACTION_MOVE:
                     if (!isLongPressMode) {
                         if (isMoved) break;
-                        float distanceX = event.getX() - mDownX;
-                        float distanceY = event.getY() - mDownY;
-                        Log.d(this.toString(), "[Distance]: [" + distanceX + ", " + distanceY + "]");
-                        if (Math.abs(event.getX() - mDownX) > 0.5 ||
-                                Math.abs(event.getY() - mDownY) > 0.5) {
+                        if (Math.abs(event.getX() - mDownX) > 5 ||
+                                Math.abs(event.getY() - mDownY) > 5) {
                             isMoved = true;
                             v.removeCallbacks(mLongPressRunnable);
-                            Log.d(this.toString(), "Runnable Removed by Move!");
                         }
                     }
                     break;
                 case MotionEvent.ACTION_UP:
-                    Log.d(this.toString(), "Action Up Run");
                     if (!isLongPressMode) {
                         v.removeCallbacks(mLongPressRunnable);
                         if (null != mOnItemClickListener) {

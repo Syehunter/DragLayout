@@ -11,9 +11,11 @@ import java.util.List;
 
 import z.sye.space.library.adapters.BaseDragAdapter;
 import z.sye.space.library.adapters.DragAdapter;
+import z.sye.space.library.adapters.UnsignedAdapter;
 import z.sye.space.library.interfaces.DragItemStartListener;
 import z.sye.space.library.interfaces.DragItemTouchHelperCallBack;
 import z.sye.space.library.interfaces.OnItemClickListener;
+import z.sye.space.library.interfaces.OnItemRemovedListener;
 import z.sye.space.library.interfaces.OnLongPressListener;
 
 /**
@@ -27,6 +29,7 @@ public class DragRecyclerView extends RecyclerView implements DragItemStartListe
     private ItemTouchHelper mItemTouchHelper;
     private OnItemClickListener mOnItemClickListener;
     private OnLongPressListener mOnLongPressListener;
+    private OnItemRemovedListener mOnItemRemovedListener;
     private int mKeepItemCount = 1;
 
     public DragRecyclerView(Context context, @Nullable AttributeSet attrs) {
@@ -43,6 +46,13 @@ public class DragRecyclerView extends RecyclerView implements DragItemStartListe
         return this;
     }
 
+    @Override
+    protected void onMeasure(int widthSpec, int heightSpec) {
+        int expandSpec = MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE >> 2,
+                MeasureSpec.AT_MOST);
+        super.onMeasure(widthSpec, expandSpec);
+    }
+
     public DragRecyclerView datas(List datas) {
         if (null == mDatas) mDatas = new ArrayList();
         mDatas.clear();
@@ -50,13 +60,18 @@ public class DragRecyclerView extends RecyclerView implements DragItemStartListe
         return this;
     }
 
-    public DragRecyclerView onItemClickListener(OnItemClickListener onItemClickListener) {
+    public DragRecyclerView onItemClick(OnItemClickListener onItemClickListener) {
         mOnItemClickListener = onItemClickListener;
         return this;
     }
 
-    public DragRecyclerView onLongPressListener(OnLongPressListener onLongPressListener) {
+    public DragRecyclerView onLongPress(OnLongPressListener onLongPressListener) {
         mOnLongPressListener = onLongPressListener;
+        return this;
+    }
+
+    public DragRecyclerView onItemRemoved(OnItemRemovedListener onItemRemovedListener) {
+        mOnItemRemovedListener = onItemRemovedListener;
         return this;
     }
 
@@ -88,6 +103,10 @@ public class DragRecyclerView extends RecyclerView implements DragItemStartListe
             mAdapter.setOnLongPressListener(mOnLongPressListener);
         }
 
+        if (null != mOnItemRemovedListener) {
+            mAdapter.setOnItemRemovedListener(mOnItemRemovedListener);
+        }
+
         mAdapter.setKeepItemCount(mKeepItemCount);
 
         DragItemTouchHelperCallBack callBack = new DragItemTouchHelperCallBack(mAdapter, mKeepItemCount);
@@ -106,4 +125,15 @@ public class DragRecyclerView extends RecyclerView implements DragItemStartListe
         }
     }
 
+    public boolean getLongPressMode() {
+        Adapter adapter = getAdapter();
+        if (adapter instanceof BaseDragAdapter) {
+            return ((BaseDragAdapter) adapter).getLongPressMode();
+        }
+        return false;
+    }
+
+    public void addItem(Object data) {
+        mAdapter.onItemInsert(0, data);
+    }
 }
