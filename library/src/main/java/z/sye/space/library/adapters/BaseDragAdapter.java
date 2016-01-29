@@ -1,6 +1,5 @@
 package z.sye.space.library.adapters;
 
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -24,20 +23,17 @@ public abstract class BaseDragAdapter<T, VH extends BaseDragViewHolder> extends 
      * Tag to judge current item mode
      */
     private boolean isLongPressMode = false;
-
     /**
      * Item Count that can not change
      */
     private int mKeepItemCount = 1;
 
     private DragItemStartListener mDragItemStartListener;
-
     private OnItemClickListener mOnItemClickListener;
     /**
-     * Listener for users to do with sth. outside recyclerview when enter LongPress Mode
+     * Listener for users to do with views outside RecyclerView when enter LongPress Mode
      */
     private OnLongPressListener mOnLongPressListener;
-
     private OnItemRemovedListener<T> mOnItemRemovedListener;
 
     public BaseDragAdapter(DragItemStartListener listener) {

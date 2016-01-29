@@ -117,8 +117,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
                 .build();
-
-        LinkedList<Object> objects = new LinkedList<>();
     }
 
     @Override
