@@ -23,9 +23,9 @@ There might be some error occurs when gradle build in Android Studio 2.0 with `"
 	android {
 		...
 		packagingOptions {
-    exclude 'META-INF/maven/com.belerweb/pinyin4j/pom.properties'
-    exclude 'META-INF/maven/com.belerweb/pinyin4j/pom.xml'
-}
+		    exclude 'META-INF/maven/com.belerweb/pinyin4j/pom.properties'
+		    exclude 'META-INF/maven/com.belerweb/pinyin4j/pom.xml'
+		}
 	}
 
 The layout above is `DragRecyclerView`, and `UnsignedRecyclerView` below.
