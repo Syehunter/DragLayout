@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import z.sye.space.library.adapters.BaseDragAdapter;
+import z.sye.space.library.adapters.BaseRecyclerAdapter;
 import z.sye.space.library.adapters.DragAdapter;
-import z.sye.space.library.adapters.UnsignedAdapter;
 import z.sye.space.library.interfaces.DragItemStartListener;
 import z.sye.space.library.interfaces.DragItemTouchHelperCallBack;
 import z.sye.space.library.interfaces.OnItemClickListener;
@@ -135,5 +135,15 @@ public class DragRecyclerView extends RecyclerView implements DragItemStartListe
 
     public void addItem(Object data) {
         mAdapter.onItemInsert(0, data);
+    }
+
+    /**
+     * @return transformed datas
+     */
+    public List getDatas() {
+        if (getAdapter() instanceof BaseRecyclerAdapter) {
+            return ((BaseRecyclerAdapter) getAdapter()).getDatas();
+        }
+        return mDatas;
     }
 }

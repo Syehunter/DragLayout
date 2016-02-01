@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 
 import java.util.List;
 
+import z.sye.space.library.adapters.BaseRecyclerAdapter;
 import z.sye.space.library.adapters.BaseUnsignedAdapter;
 import z.sye.space.library.adapters.UnsignedAdapter;
 import z.sye.space.library.interfaces.OnItemRemovedListener;
@@ -99,4 +100,10 @@ public class UnsignedRecyclerView extends RecyclerView {
         mAdapter.addItem(insertPosition, data);
     }
 
+    public List getDatas() {
+        if (getAdapter() instanceof BaseRecyclerAdapter) {
+            return ((BaseRecyclerAdapter) getAdapter()).getDatas();
+        }
+        return mDatas;
+    }
 }

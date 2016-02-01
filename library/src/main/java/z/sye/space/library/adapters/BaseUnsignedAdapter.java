@@ -3,7 +3,6 @@ package z.sye.space.library.adapters;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import z.sye.space.library.interfaces.OnItemClickListener;
 import z.sye.space.library.interfaces.OnItemRemovedListener;
 
 /**
