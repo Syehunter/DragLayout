@@ -17,7 +17,7 @@ Usage:
 	}
 	
 	dependencies {
-        compile 'com.github.Syehunter:DragLayout:1.0.0'
+        compile 'com.github.Syehunter:DragLayout:1.0.1'
 	}
 	
 There might be some error occurs when gradle build in Android Studio 2.0 with `"META-INF/maven/com.belerweb/pinyin4j/pom.properties"`(for I imported Pinyin4j.jar into library), just add this in your build.gradle:
@@ -72,4 +72,4 @@ Defaulst is Chinese, and the `UnsignedRecyclerView` is sort by `Pinjin`, Use thi
                 
  Define your adapter extends `BaseDragAdapter` or `BaseUnsignedAdapter` if you don't like this, and dragViewHolder extends `BaseDragViewHolder`,  remember to use `DragGridLayoutManager` instead of GridLayoutMananger, which will adjust RecyclerView's height to `wrap_content`(Unfortunately the `DragGridLayoutManager` doesn't support RecyclerView that has set `SpanSizeLookup` now, I will fix it in future).
 
-	
+`mDragView.getDatas()` and `mUnsignedView.getDatas()` will return the transformed datas for you to store them.	
