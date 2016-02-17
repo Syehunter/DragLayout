@@ -1,7 +1,7 @@
 # DragLayout
 RecyclerView with GridLayout that can be dragged.You may use this like the Netease ChannelManager or in some otherwise.
 
-[中文版](https://github.com/Syehunter/MaterialPageStateLayout/blob/master/README_CHS.md)
+[中文版](https://github.com/Syehunter/DragLayout/blob/master/README_CHS.md)
 
 ![](http://7xn4z4.com1.z0.glb.clouddn.com/DragLayout.gif)
 
