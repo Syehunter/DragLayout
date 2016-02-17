@@ -1,7 +1,7 @@
 # DragLayout
 可拖拽的RecyclerView(GridLayout)。可用于类似网易新闻客户端频道管理或其他相似地方。
 
-[English](https://github.com/Syehunter/MaterialPageStateLayout/blob/master/README.md)
+[English](https://github.com/Syehunter/DragLayout/blob/master/README.md)
 
 ![](http://7xn4z4.com1.z0.glb.clouddn.com/DragLayout.gif)
 
